@@ -1,10 +1,6 @@
 setup:
 
 ```
-npm install
-```
-
-```
 cd pulumi/state
 
 make login
