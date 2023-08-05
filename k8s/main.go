@@ -1,44 +1,53 @@
 package main
 
 import (
-	appsv1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/apps/v1"
-	corev1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/core/v1"
-	metav1 "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/meta/v1"
+	"fmt"
+
+	"github.com/pulumi/pulumi-eks/sdk/go/eks"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
+	"github.com/pulumi/pulumi/sdk/v3/go/pulumi/config"
 )
 
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
-
-		appLabels := pulumi.StringMap{
-			"app": pulumi.String("nginx"),
-		}
-		deployment, err := appsv1.NewDeployment(ctx, "app-dep", &appsv1.DeploymentArgs{
-			Spec: appsv1.DeploymentSpecArgs{
-				Selector: &metav1.LabelSelectorArgs{
-					MatchLabels: appLabels,
-				},
-				Replicas: pulumi.Int(1),
-				Template: &corev1.PodTemplateSpecArgs{
-					Metadata: &metav1.ObjectMetaArgs{
-						Labels: appLabels,
-					},
-					Spec: &corev1.PodSpecArgs{
-						Containers: corev1.ContainerArray{
-							corev1.ContainerArgs{
-								Name:  pulumi.String("nginx"),
-								Image: pulumi.String("nginx"),
-							}},
-					},
-				},
-			},
-		})
-		if err != nil {
-			return err
+		config := config.New(ctx, "")
+		shouldDeploy := config.RequireBool("deploy")
+		if shouldDeploy {
+			createEksCluster(ctx, config)
 		}
 
-		ctx.Export("name", deployment.Metadata.Name())
+		// ctx.Export("clusterName", cluster.Name)
+		// ctx.Export("vpcId", vpcId)
+		// ctx.Export("privateSubnetIds", privateSubnetIdsOutput)
 
 		return nil
 	})
+}
+
+func createEksCluster(ctx *pulumi.Context, conifg *config.Config) (*eks.Cluster, error) {
+	env := config.Require(ctx, "env")
+	k8sVersion := config.Require(ctx, "k8sVersion")
+
+	vpcStackRef, err := pulumi.NewStackReference(ctx, fmt.Sprintf("organization/infrastructure-vpc/%s", env), nil)
+	if err != nil {
+		return &eks.Cluster{}, err
+	}
+
+	vpcId := vpcStackRef.GetStringOutput(pulumi.String("vpcId"))
+
+	privateSubnetIds := vpcStackRef.GetOutput(pulumi.String("privateSubnetIds")).AsStringArrayOutput().ApplyT(func(privateSubnetIds []string) []string {
+		return privateSubnetIds
+	}).(pulumi.StringArrayOutput)
+
+	cluster, _ := eks.NewCluster(ctx, fmt.Sprintf("%s-eks-", env), &eks.ClusterArgs{
+		CreateOidcProvider:    pulumi.Bool(true),
+		EndpointPrivateAccess: pulumi.Bool(true),
+		EndpointPublicAccess:  pulumi.Bool(false),
+		PublicSubnetIds:       privateSubnetIds,
+		// RoleMappings: [],
+		SkipDefaultNodeGroup: pulumi.BoolRef(true),
+		Version:              pulumi.String(k8sVersion),
+		VpcId:                vpcId,
+	})
+	return cluster, nil
 }

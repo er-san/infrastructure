@@ -1,2 +1,5 @@
 node_modules
 .vscode
+k8s/infrastructure-k8s
+k8s/infrastructure-vpc
+vendor
