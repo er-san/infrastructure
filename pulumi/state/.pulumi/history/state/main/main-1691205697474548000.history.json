@@ -1,0 +1,21 @@
+{
+    "kind": "update",
+    "startTime": 1691205693,
+    "message": "",
+    "environment": {
+        "exec.kind": "cli",
+        "pulumi.arch": "arm64",
+        "pulumi.os": "darwin",
+        "pulumi.version": "v3.77.0",
+        "updatePlan": "false"
+    },
+    "config": {
+        "aws:region": "us-east-2"
+    },
+    "version": 0,
+    "result": "succeeded",
+    "endTime": 1691205697,
+    "resourceChanges": {
+        "create": 4
+    }
+}
