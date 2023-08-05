@@ -3,3 +3,4 @@ node_modules
 k8s/infrastructure-k8s
 k8s/infrastructure-vpc
 vendor
+pulumi/state/state

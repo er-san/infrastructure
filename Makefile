@@ -1,3 +1,3 @@
 .PHONY: login
 login:
-	pulumi login s3://pulumi-state-a500878
+	pulumi login s3://REPLACE-WITH-BUCKET-NAME
