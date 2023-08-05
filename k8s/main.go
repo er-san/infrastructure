@@ -39,15 +39,19 @@ func createEksCluster(ctx *pulumi.Context, conifg *config.Config) (*eks.Cluster,
 		return privateSubnetIds
 	}).(pulumi.StringArrayOutput)
 
-	cluster, _ := eks.NewCluster(ctx, fmt.Sprintf("%s-eks-", env), &eks.ClusterArgs{
+	cluster, _ := eks.NewCluster(ctx, env, &eks.ClusterArgs{
 		CreateOidcProvider:    pulumi.Bool(true),
 		EndpointPrivateAccess: pulumi.Bool(true),
 		EndpointPublicAccess:  pulumi.Bool(false),
 		PublicSubnetIds:       privateSubnetIds,
 		// RoleMappings: [],
 		SkipDefaultNodeGroup: pulumi.BoolRef(true),
-		Version:              pulumi.String(k8sVersion),
-		VpcId:                vpcId,
+		Tags: pulumi.StringMap{
+			"Env":  pulumi.String(env),
+			"Name": pulumi.String(env),
+		},
+		Version: pulumi.String(k8sVersion),
+		VpcId:   vpcId,
 	})
 	return cluster, nil
 }
