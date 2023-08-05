@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/pulumi/pulumi-awsx/sdk v1.0.4
-	github.com/pulumi/pulumi/sdk/v3 v3.75.0
+	github.com/pulumi/pulumi/sdk/v3 v3.77.1
 )
 
 require (
