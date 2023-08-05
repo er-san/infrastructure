@@ -28,15 +28,15 @@ func main() {
 }
 
 func createVpc(ctx *pulumi.Context, conifg *config.Config) (CreateVpcResult, error) {
-	azsValue := config.Require(ctx, "vpc:availabilityZoneNames")
+	azsValue := config.Require(ctx, "availabilityZoneNames")
 
 	var azs []string
 	if err := json.Unmarshal([]byte(azsValue), &azs); err != nil {
 		return CreateVpcResult{}, err
 	}
 
-	cidr := config.Require(ctx, "vpc:cidr")
-	env := config.Require(ctx, "vpc:env")
+	cidr := config.Require(ctx, "cidr")
+	env := config.Require(ctx, "env")
 	vpc, err := ec2.NewVpc(ctx, env, &ec2.VpcArgs{
 		CidrBlock:             &cidr,
 		AvailabilityZoneNames: azs,

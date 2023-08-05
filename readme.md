@@ -26,5 +26,8 @@ note the hyphen in the name of the project, infrastructure being prefix for iden
 
 ```
 from the KMS output copy in the key id:
-pulumi new aws-typescript --force --name 'infrastructure-k8s' --secrets-provider awskms://8008ba8f-60bd-446f-ba4e-addb16425a29 -s main
+pulumi new aws-typescript --force --name 'infrastructure-k8s' --secrets-provider awskms://8008ba8f-60bd-446f-ba4e-addb16425a29 -s dev
+
+if youre using the existing template code here in this repo, reset the files:
+git checkout ./.
 ```
