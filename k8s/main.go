@@ -132,7 +132,7 @@ func createEksCluster(ctx *pulumi.Context, args *CreateEksClusterInput) (*eks.Cl
 		return nil, err
 	}
 
-	_, err = eks.NewManagedNodeGroup(ctx, "default", &eks.ManagedNodeGroupArgs{
+	_, err = eks.NewManagedNodeGroup(ctx, args.initialNodeGroupName, &eks.ManagedNodeGroupArgs{
 		AmiType:       pulumi.String(args.amiType),
 		Cluster:       cluster,
 		DiskSize:      pulumi.Int(20),
@@ -152,7 +152,7 @@ func createEksCluster(ctx *pulumi.Context, args *CreateEksClusterInput) (*eks.Cl
 		Tags: pulumi.StringMap{
 			"Env":         pulumi.String(args.env),
 			"Environment": pulumi.String(args.env),
-			"Name":        pulumi.String(args.env),
+			"Name":        pulumi.String(args.initialNodeGroupName),
 		},
 	})
 	if err != nil {
