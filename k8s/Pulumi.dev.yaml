@@ -2,12 +2,16 @@ secretsprovider: awskms://582c89d2-ef53-44e1-9a39-e478f34d5332
 encryptedkey: AQICAHiwhkKSrZFYhw82AsuVDKumII4qwiAqiI64OyQNAusjGgG/IiLWv1mPKS+SqbCggoUgAAAAfjB8BgkqhkiG9w0BBwagbzBtAgEAMGgGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQM5X1p4ulKx+yrmU8nAgEQgDuNWTMa/ULNBnOmBYn67keKUqs5Q/CbRjqEHdAJrSHJO7Vhn44mdc+V8mh70Y18DlPddLMeEjLvBlFMvg==
 config:
   aws:region: us-east-2
+  infrastructure-k8s:amiType: 'BOTTLEROCKET_x86_64'
+  infrastructure-k8s:initialNodeGroupName: 'default'
   infrastructure-k8s:deploy: true
-  infrastructure-k8s:env: dev
-  infrastructure-k8s:instanceType: 't4g.micro'
-  infrastructure-k8s:k8sVersion: '1.27'
-  infrastructure-k8s:defaultMinSize: 1
-  infrastructure-k8s:defaultMaxSize: 2
-  infrastructure-k8s:defaultDesiredCapacity: 1
+  infrastructure-k8s:desiredSize: 1
   infrastructure-k8s:eksUsers:
     - ersan
+  infrastructure-k8s:endpointPublicAccess: true
+  infrastructure-k8s:endpointPrivateAccess: true
+  infrastructure-k8s:env: dev
+  infrastructure-k8s:instanceType: 't3a.small'
+  infrastructure-k8s:k8sVersion: '1.27'
+  infrastructure-k8s:maxSize: 2
+  infrastructure-k8s:minSize: 1
